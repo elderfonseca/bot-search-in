@@ -1,4 +1,7 @@
+/**
+ * Interface for Telegram API message payload.
+ */
 export interface TelegramMessage {
-  chatId: string;
+  chat_id: string;
   text: string;
 }

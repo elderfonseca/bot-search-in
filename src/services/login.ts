@@ -1,24 +1,30 @@
-import puppeteer, { Page } from 'puppeteer';
+import { Page } from 'puppeteer';
+import { LINKEDIN_EMAIL, LINKEDIN_PASSWORD } from '../utils/config';
 
 /**
- * Logs in to LinkedIn using provided credentials.
- * @param email - The LinkedIn email.
- * @param password - The LinkedIn password.
- * @returns A promise that resolves to the Puppeteer page instance.
+ * Logs into LinkedIn using the provided credentials with error handling.
+ * @param {Page} page - Puppeteer page instance.
  */
-export const loginToLinkedIn = async (email: string, password: string): Promise<Page> => {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
+export const loginToLinkedIn = async (page: Page): Promise<void> => {
+  try {
+    await page.goto('https://www.linkedin.com/login', { waitUntil: 'networkidle2' });
+    console.log('Logging into LinkedIn');
 
-  await page.goto('https://www.linkedin.com/login');
+    await page.type('#username', LINKEDIN_EMAIL);
+    await page.type('#password', LINKEDIN_PASSWORD);
+    console.log('Credentials entered');
 
-  // Fill in email and password
-  await page.type('input[name="session_key"]', email);
-  await page.type('input[name="session_password"]', password);
+    const loginButtonSelector = '[type="submit"]';
+    await page.waitForSelector(loginButtonSelector, { timeout: 10000 });
 
-  // Click login button
-  await page.click('button[type="submit"]');
-  await page.waitForNavigation();
+    await Promise.all([
+      page.click(loginButtonSelector),
+      page.waitForSelector('.global-nav__me-photo', { timeout: 15000 }), // Espera o ícone do perfil
+    ]);
 
-  return page; // Return the page instance for further actions
+    console.log('Logged into LinkedIn successfully.');
+  } catch (error) {
+    console.error('Error logging into LinkedIn:', error);
+    throw new Error('Login failed');
+  }
 };

@@ -1,17 +1,16 @@
 import axios from 'axios';
-import { TelegramMessage } from '../interfaces/telegram';
+import { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } from '../utils/config';
 
 /**
- * Sends a message to a specified Telegram chat.
- * @param message - The message object containing chatId and text.
- * @param botToken - The Telegram bot token.
- * @returns A promise that resolves to the response from Telegram API.
+ * Sends a message to a Telegram chat with error handling.
+ * @param {string} message - The message to send.
  */
-export const sendMessageToTelegram = async (message: TelegramMessage, botToken: string): Promise<void> => {
-  const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
-  await axios.post(url, {
-    chat_id: message.chatId,
-    text: message.text,
-  });
+export const sendTelegramMessage = async (message: string): Promise<void> => {
+  try {
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message });
+    console.log('Message sent to Telegram successfully.');
+  } catch (error) {
+    console.error('Error sending message to Telegram:', error);
+  }
 };

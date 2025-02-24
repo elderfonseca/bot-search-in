@@ -1,22 +1,67 @@
-import { Page } from 'puppeteer';
+import puppeteer from 'puppeteer';
+import { SEARCH_URLS } from '../utils/config';
+import { loginToLinkedIn } from './login';
 
 /**
- * Scrapes LinkedIn posts based on specified keywords.
- * @param page - The Puppeteer page instance.
- * @param url - The LinkedIn search URL.
- * @returns A promise that resolves to an array of scraped posts.
+ * Scrapes LinkedIn posts based on predefined search URLs with error handling.
+ * @returns {Promise<string[]>} Array of scraped posts.
  */
-export const scrapeLinkedInPosts = async (page: Page, url: string): Promise<string[]> => {
-  await page.goto(url);
+export const scrapeLinkedInPosts = async (): Promise<string[]> => {
+  let browser;
+  try {
+    browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
 
-  // Wait for posts to load
-  await page.waitForSelector('.search-results__list'); // Adjust selector as needed
+    await loginToLinkedIn(page);
 
-  // Scrape post contents
-  const posts = await page.evaluate(() => {
-    const postElements = document.querySelectorAll('.search-results__list .post-class'); // Adjust selector as needed
-    return Array.from(postElements).map((post) => (post as HTMLElement).innerText);
-  });
+    console.log('Navigating to LinkedIn search URLs...');
 
-  return posts; // Return the array of scraped post contents
+    let allPosts: string[] = [];
+
+    for (const url of SEARCH_URLS) {
+      try {
+        console.log(`Navigating to: ${url}`);
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+        await page.waitForSelector('.scaffold-finite-scroll__content', { timeout: 10000 });
+
+        const posts = await page.evaluate(() => {
+          return Array.from(document.querySelectorAll('div.feed-shared-update-v2'))
+            .map((post) => {
+              try {
+                const textElement = post.querySelector('div.update-components-text span.break-words') as HTMLElement;
+                return textElement?.innerText?.trim();
+              } catch (error) {
+                console.error('Error extracting post text:', error);
+                return undefined;
+              }
+            })
+            .filter((text) => text !== undefined) as string[];
+        });
+
+        console.log(`Scraped ${posts.length} posts from ${url}`);
+        allPosts = [...allPosts, ...posts];
+      } catch (error) {
+        console.error(`Error scraping URL: ${url}`, error);
+      }
+    }
+
+    if (!allPosts.length) {
+      console.warn('No posts were scraped.');
+      return [];
+    }
+
+    return allPosts;
+  } catch (error) {
+    console.error('Error launching Puppeteer:', error);
+    return [];
+  } finally {
+    if (browser) {
+      try {
+        await browser.close();
+        console.log('Browser closed.');
+      } catch (error) {
+        console.error('Error closing browser:', error);
+      }
+    }
+  }
 };
