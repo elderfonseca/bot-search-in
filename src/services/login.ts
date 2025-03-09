@@ -7,16 +7,25 @@ import { LINKEDIN_EMAIL, LINKEDIN_PASSWORD } from '../utils/config';
  */
 export const loginToLinkedIn = async (page: Page): Promise<void> => {
   try {
-    await page.goto('https://www.linkedin.com/login', { waitUntil: 'networkidle2' });
+    await page.goto('https://www.linkedin.com/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
     console.log('Logging into LinkedIn');
 
-    await page.type('#username', LINKEDIN_EMAIL);
-    await page.type('#password', LINKEDIN_PASSWORD);
+    await page.type('#username', LINKEDIN_EMAIL, { delay: 100 });
+    await page.type('#password', LINKEDIN_PASSWORD, { delay: 100 });
     console.log('Credentials entered');
+    const pageContent = await page.content();
+    console.log('Current page content:', pageContent);
 
     const loginButtonSelector = '[type="submit"]';
     await page.waitForSelector(loginButtonSelector, { timeout: 10000 });
-    await page.click(loginButtonSelector);
+    const loginButton = await page.$(loginButtonSelector);
+    if (!loginButton) {
+      console.error('Login button not found');
+    } else {
+      await page.mouse.move(100, 100);
+      await page.click(loginButtonSelector);
+      console.log('Login button clicked');
+    }
 
     console.log('Waiting for profile picture selector to confirm login...');
     console.log('Current URL:', page.url());
