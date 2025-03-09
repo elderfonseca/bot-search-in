@@ -9,7 +9,11 @@ import { loginToLinkedIn } from './login';
 export const scrapeLinkedInPosts = async (): Promise<string[]> => {
   let browser;
   try {
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
     const page = await browser.newPage();
 
     await loginToLinkedIn(page);

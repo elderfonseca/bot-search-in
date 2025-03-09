@@ -38,7 +38,10 @@ describe('scrapeLinkedInPosts', () => {
 
     const result = await scrapeLinkedInPosts();
 
-    expect(puppeteer.launch).toHaveBeenCalledWith({ headless: true });
+    expect(puppeteer.launch).toHaveBeenCalledWith({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     expect(browser.newPage).toHaveBeenCalled();
     expect(loginToLinkedIn).toHaveBeenCalledWith(page);
     expect(page.goto).toHaveBeenCalledTimes(2);
@@ -54,7 +57,10 @@ describe('scrapeLinkedInPosts', () => {
 
     const result = await scrapeLinkedInPosts();
 
-    expect(puppeteer.launch).toHaveBeenCalledWith({ headless: true });
+    expect(puppeteer.launch).toHaveBeenCalledWith({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     expect(browser.newPage).toHaveBeenCalled();
     expect(loginToLinkedIn).toHaveBeenCalledWith(page);
     expect(page.goto).toHaveBeenCalled();
@@ -67,7 +73,10 @@ describe('scrapeLinkedInPosts', () => {
 
     const result = await scrapeLinkedInPosts();
 
-    expect(puppeteer.launch).toHaveBeenCalledWith({ headless: true });
+    expect(puppeteer.launch).toHaveBeenCalledWith({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     expect(result).toEqual([]);
   });
 
@@ -79,7 +88,10 @@ describe('scrapeLinkedInPosts', () => {
 
     const result = await scrapeLinkedInPosts();
 
-    expect(puppeteer.launch).toHaveBeenCalledWith({ headless: true });
+    expect(puppeteer.launch).toHaveBeenCalledWith({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     expect(browser.newPage).toHaveBeenCalled();
     expect(loginToLinkedIn).toHaveBeenCalledWith(page);
     expect(page.goto).toHaveBeenCalled();
