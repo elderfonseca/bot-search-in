@@ -26,17 +26,19 @@ export const loginToLinkedIn = async (page: Page): Promise<void> => {
       console.log('Login button clicked');
     }
 
-    console.log('Waiting for profile picture selector to confirm login...');
-    console.log('Current URL:', page.url());
-    await page.screenshot({ path: 'login-debug.png', fullPage: true });
-    console.log('Screenshot saved. Check login-debug.png');
-    const errorMessage = await page.$eval('.alert-content', (el) => el.textContent).catch(() => null);
-    if (errorMessage) {
-      console.error('Login error message detected:', errorMessage);
-    }
-    await page.waitForSelector('.global-nav__me-photo', { timeout: 30000 });
+    setTimeout(async () => {
+      console.log('Waiting for profile picture selector to confirm login...');
+      console.log('Current URL:', page.url());
+      await page.screenshot({ path: 'login-debug.png', fullPage: true });
+      console.log('Screenshot saved. Check login-debug.png');
+      const errorMessage = await page.$eval('.alert-content', (el) => el.textContent).catch(() => null);
+      if (errorMessage) {
+        console.error('Login error message detected:', errorMessage);
+      }
+      await page.waitForSelector('.global-nav__me-photo', { timeout: 30000 });
 
-    console.log('Logged into LinkedIn successfully.');
+      console.log('Logged into LinkedIn successfully.');
+    }, 60000);
   } catch (error) {
     console.error('Error logging into LinkedIn:', error);
     throw new Error('Login failed');
