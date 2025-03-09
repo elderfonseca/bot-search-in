@@ -24,6 +24,7 @@ export const loginToLinkedIn = async (page: Page): Promise<void> => {
     } else {
       await page.mouse.move(100, 100);
       await page.click(loginButtonSelector);
+      await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 });
       console.log('Login button clicked');
     }
 
