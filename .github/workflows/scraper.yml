@@ -28,3 +28,10 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: npm start
+        continue-on-error: true
+      - name: Upload screenshot if exists
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: debug-screenshot
+          path: login-debug.png
