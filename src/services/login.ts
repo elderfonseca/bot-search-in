@@ -13,8 +13,6 @@ export const loginToLinkedIn = async (page: Page): Promise<void> => {
     await page.type('#username', LINKEDIN_EMAIL, { delay: 100 });
     await page.type('#password', LINKEDIN_PASSWORD, { delay: 100 });
     console.log('Credentials entered');
-    const pageContent = await page.content();
-    console.log('Current page content:', pageContent);
 
     const loginButtonSelector = '[type="submit"]';
     await page.waitForSelector(loginButtonSelector, { timeout: 10000 });
