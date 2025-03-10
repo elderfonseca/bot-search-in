@@ -7,7 +7,7 @@ import { LINKEDIN_EMAIL, LINKEDIN_PASSWORD } from '../utils/config';
  */
 export const loginToLinkedIn = async (page: Page): Promise<void> => {
   try {
-    await page.goto('https://www.linkedin.com/login', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.goto('https://www.linkedin.com/login', { waitUntil: 'domcontentloaded' });
     console.log('Logging into LinkedIn');
 
     await page.type('#username', LINKEDIN_EMAIL, { delay: 100 });
@@ -15,14 +15,14 @@ export const loginToLinkedIn = async (page: Page): Promise<void> => {
     console.log('Credentials entered');
 
     const loginButtonSelector = '[type="submit"]';
-    await page.waitForSelector(loginButtonSelector, { timeout: 10000 });
+    await page.waitForSelector(loginButtonSelector);
     const loginButton = await page.$(loginButtonSelector);
     if (!loginButton) {
       console.error('Login button not found');
     } else {
       await page.mouse.move(100, 100);
       await page.click(loginButtonSelector);
-      await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 90000 });
+      await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
       console.log('Login button clicked');
     }
 
@@ -34,7 +34,7 @@ export const loginToLinkedIn = async (page: Page): Promise<void> => {
     if (errorMessage) {
       console.error('Login error message detected:', errorMessage);
     }
-    await page.waitForSelector('.global-nav__me-photo', { timeout: 90000 });
+    await page.waitForSelector('.global-nav__me-photo');
 
     console.log('Logged into LinkedIn successfully.');
   } catch (error) {
