@@ -13,6 +13,7 @@ export const scrapeLinkedInPosts = async (): Promise<string[]> => {
     browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      slowMo: 500,
     });
 
     const page = await browser.newPage();
