@@ -5,10 +5,23 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test-config": "ts-node test-config.ts",
+    "build": "tsc",
+    "dev": "ts-node --watch src/index.ts",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "linkedin",
+    "scraper",
+    "telegram",
+    "bot",
+    "automation",
+    "jobs",
+    "remote-work"
+  ],
+  "author": "Elder Fonseca",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.5.14",
@@ -27,5 +40,8 @@
     "dotenv": "^16.4.7",
     "fs": "^0.0.1-security",
     "puppeteer": "^24.2.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
